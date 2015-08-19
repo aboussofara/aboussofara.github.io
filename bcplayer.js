@@ -154,6 +154,7 @@ var bcplayer = (function() {
 
     onAdStart = function(event) {
         adStarted = true;
+        chromelessControls.setVisible(false);
         if (isMidroll && !isAfterMidroll) {
             //The first part of the video has ended.
             streamSense.notify(ns_.StreamSense.PlayerEvents.END, {}, event.position * 1000);
@@ -426,10 +427,8 @@ var bcplayer = (function() {
         log("bcplayer --- setAds");
         setAds();
         experienceModule = player.getModule(brightcove.api.modules.APIModules.EXPERIENCE);
-        test1= experienceModule.getAdEnabled();
-        test2= experienceModule.getHeight();
-       experienceModule.addEventListener(AdEvent.TEMPLATE_READY, onTemplateReady);
-        log("***********test***************");
+        experienceModule.addEventListener(AdEvent.TEMPLATE_READY, onTemplateReady);
+
         //comScore StreamSense Analytics
         streamSense = new ns_.StreamSense({}, 'http://b.scorecardresearch.com/p?c1=2&c2=' + streamSenseC2 + "&c3=" + siteTag);
         streamSense.setPlaylist();
@@ -449,8 +448,10 @@ var bcplayer = (function() {
         }
      
         log("bcplayer --- onTemplateReady");
+        
         chromelessPlayer = experienceModule.getElementsByID("videoPlayer");
         chromelessControls = chromelessPlayer.getControls;
+        
         templateReadyDone = true;
         videoPlayer = player.getModule(APIModules.VIDEO_PLAYER);
         if (playerType === "html") {
