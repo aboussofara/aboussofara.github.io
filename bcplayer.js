@@ -54,8 +54,6 @@ var bcplayer = (function() {
         experienceModule,
         chromelessPlayer,
         chromelessControls,
-        test1,
-        test2,
 
     // METHODS DECLARATION ==========================================================================================
         bind,
