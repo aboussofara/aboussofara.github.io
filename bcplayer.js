@@ -400,7 +400,7 @@ var bcplayer = (function() {
         }
 
         adServerUrl = "http://pubads.g.doubleclick.net/gampad/ads?iu=" + gptAdUnit + "&sz=" + sz + "&gdfp_req=1&env=vp&output=xml_vast2&unviewed_position_start=1";
-
+        log("Trew" + adServerUrl);
         var adPolicy = {};
         adPolicy.adServerURL = adServerUrl;
         adPolicy.prerollAds = true;
@@ -423,8 +423,8 @@ var bcplayer = (function() {
         cuePointsModule = player.getModule(APIModules.CUE_POINTS);   
         log("bcplayer --- setAds");
         setAds();
-        experienceModule = player.getModule(brightcove.api.modules.APIModules.EXPERIENCE);
-        experienceModule.addEventListener(AdEvent.TEMPLATE_READY, onTemplateReady);
+        experienceModule = player.getModule(APIModules.EXPERIENCE);
+        experienceModule.addEventListener(BCExperienceEvent.TEMPLATE_READY, onTemplateReady);
 
         //comScore StreamSense Analytics
         streamSense = new ns_.StreamSense({}, 'http://b.scorecardresearch.com/p?c1=2&c2=' + streamSenseC2 + "&c3=" + siteTag);
@@ -446,8 +446,12 @@ var bcplayer = (function() {
      
         log("bcplayer --- onTemplateReady");
         
-        chromelessPlayer = experienceModule.getElementsByID("videoPlayer");
-        chromelessControls = chromelessPlayer.getControls;
+        chromelessPlayer = experienceModule.getElementByID("videoPlayer");
+        chromelessControls = chromelessPlayer.getControls();
+
+         // ad events
+        adModule.addEventListener(adEvent.START, onAdStart);
+        adModule.addEventListener(adEvent.COMPLETE, onAdComplete);
         
         templateReadyDone = true;
         videoPlayer = player.getModule(APIModules.VIDEO_PLAYER);
@@ -473,17 +477,14 @@ var bcplayer = (function() {
         });
 
 
-        // ad events
-        adModule.addEventListener(AdEvent.START, onAdStart);
-        adModule.addEventListener(AdEvent.COMPLETE, onAdComplete);
         // player events
-        videoPlayer.addEventListener(mediaEvent.BEGIN, onMediaBegin);
-        videoPlayer.addEventListener(mediaEvent.STOP, onMediaStop);
-        videoPlayer.addEventListener(mediaEvent.PLAY, onMediaPlay);
-        videoPlayer.addEventListener(mediaEvent.PROGRESS, onMediaProgress);
-        videoPlayer.addEventListener(mediaEvent.SEEK_NOTIFY, onMediaSeek);
-        videoPlayer.addEventListener(mediaEvent.ERROR, onMediaError);
-        videoPlayer.addEventListener(mediaEvent.COMPLETE, onMediaComplete);
+        videoPlayer.addEventListener(BCAdvertisingEvent.BEGIN, onMediaBegin);
+        videoPlayer.addEventListener(BCAdvertisingEvent.STOP, onMediaStop);
+        videoPlayer.addEventListener(BCAdvertisingEvent.PLAY, onMediaPlay);
+        videoPlayer.addEventListener(BCAdvertisingEvent.PROGRESS, onMediaProgress);
+        videoPlayer.addEventListener(BCAdvertisingEvent.SEEK_NOTIFY, onMediaSeek);
+        videoPlayer.addEventListener(BCAdvertisingEvent.ERROR, onMediaError);
+        videoPlayer.addEventListener(BCAdvertisingEvent.COMPLETE, onMediaComplete);
 
         // responsive and resize
         videoPlayer.getCurrentRendition(function(renditionDTO) {
